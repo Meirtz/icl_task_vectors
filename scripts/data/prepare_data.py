@@ -1,3 +1,5 @@
+import sys
+sys.path.append('.')
 from core.data.preparation.knowledge_data import prepare_knowledge_data
 from core.data.preparation.linguistic_data import prepare_linguistic_data
 from core.data.preparation.translation_data import prepare_translation_data
