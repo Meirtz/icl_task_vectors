@@ -77,6 +77,7 @@ def run_main_experiment(
 ) -> None:
     print("Evaluating model:", model_type, model_variant)
 
+
     results_file = get_results_file_path(model_type, model_variant, experiment_id=experiment_id)
     os.makedirs(os.path.dirname(results_file), exist_ok=True)
 
@@ -86,11 +87,12 @@ def run_main_experiment(
     else:
         results = {}
 
-    limit_gpus(range(0, 8))
+    limit_gpus(range(2, 3))
 
     print("Loading model and tokenizer...")
     if model is None or tokenizer is None:
         model, tokenizer = load_model_and_tokenizer(model_type, model_variant)
+        # model.to("cuda")
     print("Loaded model and tokenizer.")
 
     tasks = get_all_tasks(tokenizer=tokenizer)
