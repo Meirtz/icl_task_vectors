@@ -58,7 +58,8 @@ class MappingTask(Task):
 
     def sample_inputs(self, num_inputs: int, exclude: List[str] = ()) -> List[str]:
         input_space = list(self.mapping.keys())
-        return random.sample(set(input_space) - set(exclude), num_inputs)
+        # return random.sample(set(input_space) - set(exclude), num_inputs)
+        return random.sample(list(set(input_space) - set(exclude)), num_inputs)
 
     def calc_output(self, inp) -> str:
         return self.mapping[inp]
