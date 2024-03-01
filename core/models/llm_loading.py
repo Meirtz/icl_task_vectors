@@ -34,7 +34,10 @@ def _setup_tokenizer(tokenizer: PreTrainedTokenizer) -> None:
 
 
 def llama_local_path(variant: LlamaVariant, size: LlamaSize) -> str:
-    llama_dir = os.environ["LLAMA_DIR"]
+    llama_dir = './' #os.environ["LLAMA_DIR"]
+    print("Giving up using llama.. Using dummy path. If you want to use llama, please set the environment variable",
+          "LLAMA_DIR to the path of the llama directory, and modify the llama_local_path function in",
+          "core/models/llm_loading.py to return the correct path.")
     return f"{llama_dir}/{variant}/{size}"
 
 
@@ -168,5 +171,8 @@ MODEL_PATHS = {
     "cerebras-gpt": {
         "6.7B": "cerebras/Cerebras-GPT-6.7B",
         "13B": "cerebras/Cerebras-GPT-13B",
+    },
+    "mistral": {
+        "7B": "mistralai/Mistral-7B-v0.1",
     },
 }
