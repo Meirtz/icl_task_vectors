@@ -1,3 +1,5 @@
+#!/bin/bash
+
 script_name=$1
 script_full_path="scripts.$script_name"
 
