@@ -78,7 +78,9 @@ class IncrementTask(Task):
 
     def sample_inputs(self, num_inputs: int, exclude: Iterable[str] = ()) -> List[str]:
         input_space = self.input_space
-        return random.sample(set(input_space) - set(exclude), num_inputs)
+        # Convert the resulting set to a list before sampling
+        population = list(set(input_space) - set(exclude))
+        return random.sample(population, num_inputs)
 
     @property
     def input_space(self) -> List[int]:

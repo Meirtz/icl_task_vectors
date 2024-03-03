@@ -18,7 +18,9 @@ class TokenOprationTask(Task):
         self.input_space = input_space
 
     def sample_inputs(self, num_inputs: int, exclude: List[str] = ()) -> List[str]:
-        return random.sample(set(self.input_space) - set(exclude), num_inputs)
+        # Convert the resulting set to a list to make it a sequence
+        population = list(set(self.input_space) - set(exclude))
+        return random.sample(population, num_inputs)
 
     def calc_output(self, inp) -> str:
         if self.operation == "to_upper":
