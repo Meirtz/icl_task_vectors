@@ -87,7 +87,7 @@ def run_main_experiment(
     else:
         results = {}
 
-    limit_gpus(range(2, 3))
+    limit_gpus(range(0, 2))
 
     print("Loading model and tokenizer...")
     if model is None or tokenizer is None:
