@@ -16,8 +16,8 @@ BASE_KWARGS = {
 
 GPU_KWARGS = {
     **BASE_KWARGS,
-    # "load_in_8bit": True,
-    # "device_map": "auto",
+    "load_in_8bit": True,
+    "device_map": "auto",
 }
 
 CPU_KWARGS = {
@@ -82,17 +82,20 @@ def _create_device_map(model_path: str) -> dict[str, int]:
     base_device_map = infer_auto_device_map(model, max_memory=max_memory, no_split_module_classes=[layer_class])
 
     num_devices = torch.cuda.device_count()
+    print(f"Using {num_devices} CUDA devices, Here's the details: {torch.cuda.get_device_properties(0)}")
+
+    if num_devices <= 1:
+        # Assign all layers to device 0 if there is only one device
+        return {k: 0 for k in get_layers_path(model)}
 
     layers_path = get_layers_path(model)
-
-    # device_map_lm_head = {k: v for k, v in base_device_map.items() if "lm_head" in k}
-    # device_map_emb = {k: v for k, v in base_device_map.items() if "emb" in k}
     device_map_layers = {k: v for k, v in base_device_map.items() if k.startswith(layers_path)}
     device_map_other = {k: v for k, v in base_device_map.items() if k not in device_map_layers}
 
-    # place the other layers on device 0
+    # Place the other layers on device 0
     device_map_other = {k: 0 for k in device_map_other}
-    # split the layers evenly across the other devices (1-num_devices)
+
+    # Split the layers evenly across the other devices (1 to num_devices-1)
     num_layers = len(device_map_layers)
     num_layers_per_device = math.ceil(num_layers / (num_devices - 1))
     device_map_layers = {k: (i // num_layers_per_device + 1) for i, k in enumerate(device_map_layers)}
@@ -107,7 +110,7 @@ def load_model(model_type: str, model_variant: str, load_to_cpu: bool = False):
 
     kwargs = CPU_KWARGS if load_to_cpu else GPU_KWARGS
 
-    kwargs["device_map"] = _create_device_map(model_path)
+    # kwargs["device_map"] = _create_device_map(model_path)
 
     model = AutoModelForCausalLM.from_pretrained(model_path, **kwargs)
     model = model.eval()  # check if this is necessary
